@@ -2,4 +2,3 @@ fastapi
 pytest
 uvicorn
 sqlalchemy
-psycopg2-binary
