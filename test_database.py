@@ -5,14 +5,14 @@ import database
 from datetime import datetime
 
 @pytest.fixture
-def db():
+def session():
     engine = create_engine('sqlite:///:memory:')
     database.EmailSchedule.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     return Session()
 
-def test_email_schedule(db):
+def test_email_schedule(session):
     email_schedule = database.EmailSchedule(email='test@example.com', subject='Test', body='This is a test.', scheduled_time=datetime.now())
-    db.add(email_schedule)
-    db.commit()
-    assert db.query(database.EmailSchedule).count() == 1
+    session.add(email_schedule)
+    session.commit()
+    assert session.query(database.EmailSchedule).count() == 1
