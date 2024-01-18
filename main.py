@@ -5,11 +5,6 @@ from database import EmailSchedule, add_email_schedule
 app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 class EmailScheduleRequest(BaseModel):
     email: str
     subject: str
@@ -17,8 +12,21 @@ class EmailScheduleRequest(BaseModel):
     scheduled_time: str
 
 
-@app.post("/email-schedules")
+class EmailScheduleResponse(BaseModel):
+    id: int
+    email: str
+    subject: str
+    body: str
+    scheduled_time: str
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.post("/email-schedules", response_model=EmailScheduleResponse)
 def create_email_schedule(email_schedule_request: EmailScheduleRequest):
     email_schedule = EmailSchedule(**email_schedule_request.dict())
-    add_email_schedule(email_schedule)
-    return {"message": "Email schedule created successfully."}
+    created_email_schedule = add_email_schedule(email_schedule)
+    return created_email_schedule
