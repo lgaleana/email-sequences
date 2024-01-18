@@ -1,9 +1,15 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from database import EmailSchedule, add_email_schedule
+from datetime import datetime
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
+
+def str_to_datetime(date_string):
+    return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S.%f")
 
 class EmailScheduleRequest(BaseModel):
     email: str
@@ -21,12 +27,13 @@ class EmailScheduleResponse(BaseModel):
 
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def read_root(request: Request):
+    return templates.TemplateResponse("email_schedule_form.html", {"request": request})
 
 
 @app.post("/email-schedules", response_model=EmailScheduleResponse)
-def create_email_schedule(email_schedule_request: EmailScheduleRequest):
+def create_email_schedule(request: Request, email_schedule_request: EmailScheduleRequest):
+    email_schedule_request.scheduled_time = str_to_datetime(email_schedule_request.scheduled_time)
     email_schedule = EmailSchedule(**email_schedule_request.dict())
     created_email_schedule = add_email_schedule(email_schedule)
     return created_email_schedule
