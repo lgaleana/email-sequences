@@ -28,7 +28,7 @@ def read_root(request: Request):
 
 
 @app.post("/email-schedules", response_model=EmailScheduleResponse)
-def create_email_schedule(request: Request, email_schedule_request: EmailScheduleRequest):
+def create_email_schedule(email_schedule_request: EmailScheduleRequest):
     email_schedule_request.scheduled_time = str_to_datetime(email_schedule_request.scheduled_time)
     email_schedule = EmailSchedule(**email_schedule_request.dict())
     created_email_schedule = add_email_schedule(email_schedule)
