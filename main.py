@@ -3,20 +3,16 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from database import EmailSchedule, add_email_schedule
 from datetime import datetime
+from utils import str_to_datetime
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
-
-def str_to_datetime(date_string):
-    return datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S.%f")
 
 class EmailScheduleRequest(BaseModel):
     email: str
     subject: str
     body: str
     scheduled_time: str
-
 
 class EmailScheduleResponse(BaseModel):
     id: int

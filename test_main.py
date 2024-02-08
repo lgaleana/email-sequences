@@ -1,7 +1,8 @@
 from unittest.mock import Mock, patch
 from fastapi.testclient import TestClient
-from main import app, str_to_datetime
+from main import app
 from datetime import datetime
+from utils import str_to_datetime
 
 client = TestClient(app)
 
